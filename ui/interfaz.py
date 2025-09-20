@@ -14,6 +14,8 @@ from PyQt6.QtWidgets import (
     QTextEdit, QProgressBar, QMessageBox, QComboBox
 )
 
+from PyQt6.QtGui import QIcon
+
 # Importar desde el directorio padre
 import sys
 import os
@@ -43,7 +45,13 @@ class VentanaDeJuego(QMainWindow):
         la interfaz gráfica completa.
         """
         super().__init__()
-        self.setWindowTitle("Triqui con Algoritmo Genético")
+        self.setWindowTitle("Triqui con el Algoritmo Genético")
+        
+        # Agregar icono de la ventana
+        self.setWindowIcon(QIcon("ui/img/UTP.png"))
+        
+        # Color de fondo de toda la ventana
+        self.setStyleSheet("background-color: #2d313f;")
 
         # Modelo de juego
         self.tablero_de_juego = TableroTriqui()
@@ -60,9 +68,56 @@ class VentanaDeJuego(QMainWindow):
         # Estadísticas básicas
         self.estadisticas_juego = {"humano": 0, "computadora": 0, "empates": 0}
 
+        # Definir estilos consistentes para las celdas
+        self._definir_estilos_celdas()
+
         # Construcción de la interfaz
         self._construir_interfaz()
         self._reiniciar_interfaz_tablero()
+
+    def _definir_estilos_celdas(self):
+        """
+        Define los estilos CSS consistentes para las diferentes estados de las celdas.
+        """
+        self.ESTILO_CELDA_VACIA = """
+            QPushButton {
+                font-size: 35px; 
+                font-weight: bold; 
+                background-color: #ffffff; 
+                border: 2px solid #cccccc; 
+                border-radius: 8px;
+                color: #666666;
+            }
+            QPushButton:hover {
+                background-color: #f8f9fa;
+                border-color: #dc3545;
+            }
+            QPushButton:pressed {
+                background-color: #e9ecef;
+            }
+        """
+        
+        self.ESTILO_CELDA_X = """
+            QPushButton {
+                font-size: 34px; 
+                font-weight: bold; 
+                color: #dc3545; 
+                background-color: #fff5f5; 
+                border: 2px solid #dc3545; 
+                border-radius: 8px;
+            }
+        """
+        
+        self.ESTILO_CELDA_O = """
+            QPushButton {
+                font-size: 34px; 
+                font-weight: bold; 
+                color: #007bff; 
+                background-color: #f8f9ff; 
+                border: 2px solid #007bff; 
+                border-radius: 8px;
+            }
+        """
 
     # ----------------- Construcción de la GUI -----------------
 
@@ -82,14 +137,19 @@ class VentanaDeJuego(QMainWindow):
         # Sección de tablero
         grupo_tablero = QGroupBox("Tablero")
         layout_rejilla_tablero = QGridLayout()
+        
+        # Ajustar espaciado y márgenes
+        layout_rejilla_tablero.setSpacing(12)  # Separación entre celdas
+        layout_rejilla_tablero.setContentsMargins(28, 28, 28, 28)  # Margen alrededor del grid
+        
         grupo_tablero.setLayout(layout_rejilla_tablero)
 
         self.lista_botones_celda = []
         indice = 0
         while indice < 9:
             boton_celda = QPushButton(" ")
-            boton_celda.setFixedSize(90, 90)
-            boton_celda.setStyleSheet("font-size:28px; font-weight:bold;")
+            boton_celda.setFixedSize(115, 115)
+            boton_celda.setStyleSheet(self.ESTILO_CELDA_VACIA)
             boton_celda.clicked.connect(self._crear_manejador_click_celda(indice))
             self.lista_botones_celda.append(boton_celda)
             fila = int(indice / 3)
@@ -127,13 +187,13 @@ class VentanaDeJuego(QMainWindow):
         fila_1.addWidget(QLabel("Tamaño de población:"))
         self.campo_poblacion = QSpinBox()
         self.campo_poblacion.setRange(4, 200)
-        self.campo_poblacion.setValue(24)
+        self.campo_poblacion.setValue(80)  # Cambiado de 24 a 80
         fila_1.addWidget(self.campo_poblacion)
 
         fila_1.addWidget(QLabel("Número de generaciones:"))
         self.campo_generaciones = QSpinBox()
         self.campo_generaciones.setRange(1, 200)
-        self.campo_generaciones.setValue(20)
+        self.campo_generaciones.setValue(150)  # Cambiado de 20 a 150
         fila_1.addWidget(self.campo_generaciones)
         layout_entrenamiento.addLayout(fila_1)
 
@@ -141,13 +201,13 @@ class VentanaDeJuego(QMainWindow):
         fila_2.addWidget(QLabel("Mutación (%):"))
         self.campo_mutacion = QSpinBox()
         self.campo_mutacion.setRange(0, 100)
-        self.campo_mutacion.setValue(20)
+        self.campo_mutacion.setValue(10)  # Cambiado de 20 a 10 (10%)
         fila_2.addWidget(self.campo_mutacion)
 
         fila_2.addWidget(QLabel("Élite:"))
         self.campo_elite = QSpinBox()
         self.campo_elite.setRange(0, 20)
-        self.campo_elite.setValue(2)
+        self.campo_elite.setValue(12)  # Cambiado de 2 a 12 (15% de 80)
         fila_2.addWidget(self.campo_elite)
         layout_entrenamiento.addLayout(fila_2)
 
@@ -167,7 +227,7 @@ class VentanaDeJuego(QMainWindow):
         layout_panel_derecho.addWidget(grupo_entrenamiento)
         layout_panel_derecho.addStretch()
 
-        layout_principal.addWidget(grupo_tablero, stretch=2)
+        layout_principal.addWidget(grupo_tablero, stretch=3)
         layout_principal.addLayout(layout_panel_derecho, stretch=3)
 
     def _crear_manejador_click_celda(self, indice_posicion):
@@ -195,6 +255,7 @@ class VentanaDeJuego(QMainWindow):
         indice = 0
         while indice < 9:
             self.lista_botones_celda[indice].setText(" ")
+            self.lista_botones_celda[indice].setStyleSheet(self.ESTILO_CELDA_VACIA)
             self.lista_botones_celda[indice].setEnabled(True)
             indice += 1
         self.etiqueta_estado.setText("Estado: turno del jugador humano (X)")
@@ -232,6 +293,7 @@ class VentanaDeJuego(QMainWindow):
         # Humano juega "X"
         self.tablero_de_juego.colocar_marca_en_posicion("X", indice_posicion)
         self.lista_botones_celda[indice_posicion].setText("X")
+        self.lista_botones_celda[indice_posicion].setStyleSheet(self.ESTILO_CELDA_X)
         self.lista_botones_celda[indice_posicion].setEnabled(False)
 
         # Verificar si el juego terminó
@@ -258,6 +320,7 @@ class VentanaDeJuego(QMainWindow):
 
         self.tablero_de_juego.colocar_marca_en_posicion("O", movimiento)
         self.lista_botones_celda[movimiento].setText("O")
+        self.lista_botones_celda[movimiento].setStyleSheet(self.ESTILO_CELDA_O)
         self.lista_botones_celda[movimiento].setEnabled(False)
 
         resultado = self.tablero_de_juego.obtener_ganador()
