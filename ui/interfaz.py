@@ -19,11 +19,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from logica import (
-    TableroTriqui, EstrategiaDeJuego, IAConPesos,
-    AlgoritmoGenetico
-)
-
+from logica.tablero import TableroTriqui
+from logica.ia import IAConPesos
+from logica.algoritmo_genetico.individuo import EstrategiaDeJuego
+from logica.algoritmo_genetico.motor_ag import AlgoritmoGenetico
 
 class VentanaDeJuego(QMainWindow):
     """
@@ -44,7 +43,7 @@ class VentanaDeJuego(QMainWindow):
         la interfaz gráfica completa.
         """
         super().__init__()
-        self.setWindowTitle("Triqui con Algoritmo Genético (PyQt6) - Lógica y GUI separadas")
+        self.setWindowTitle("Triqui con Algoritmo Genético")
 
         # Modelo de juego
         self.tablero_de_juego = TableroTriqui()

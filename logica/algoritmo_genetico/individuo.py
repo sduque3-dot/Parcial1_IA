@@ -1,7 +1,8 @@
 """
-Módulo que define las estrategias de juego para el algoritmo genético.
+Módulo que define los individuos del algoritmo genético.
 
-Contiene la clase EstrategiaDeJuego que encapsula los pesos utilizados
+Contiene la clase EstrategiaDeJuego que representa un individuo (cromosoma)
+en el algoritmo genético. Cada individuo encapsula los pesos utilizados
 por la IA para evaluar movimientos, junto con operadores genéticos
 para evolucionar estas estrategias.
 """
@@ -10,13 +11,13 @@ import random
 
 class EstrategiaDeJuego:
     """
-    Representa una estrategia de juego definida por pesos enteros (0-10).
+    Representa un individuo del algoritmo genético (estrategia de juego).
     
-    Cada estrategia contiene un conjunto de pesos que determinan la importancia
-    relativa de diferentes aspectos del juego. Estos pesos son utilizados por
-    la IA para evaluar y seleccionar movimientos.
+    Cada individuo contiene un cromosoma definido por pesos enteros (0-10)
+    que determinan la importancia relativa de diferentes aspectos del juego.
+    Estos pesos son utilizados por la IA para evaluar y seleccionar movimientos.
     
-    Los pesos incluyen:
+    Los genes (pesos) incluyen:
     - peso_ganar: Importancia de movimientos que ganan inmediatamente
     - peso_bloquear: Importancia de bloquear victorias del oponente  
     - peso_centro: Valor del control del centro del tablero
@@ -28,7 +29,7 @@ class EstrategiaDeJuego:
     
     def __init__(self, diccionario_pesos=None):
         """
-        Inicializa una estrategia de juego con pesos específicos o aleatorios.
+        Inicializa un individuo con pesos específicos o aleatorios.
         
         Args:
             diccionario_pesos (dict, optional): Diccionario con pesos predefinidos.
@@ -40,7 +41,7 @@ class EstrategiaDeJuego:
             - 10 significa máxima importancia para ese factor
         """
         if diccionario_pesos is None:
-            # Generar pesos aleatorios para una nueva estrategia
+            # Generar pesos aleatorios para un nuevo individuo
             self.diccionario_pesos = {
                 "peso_ganar": random.randint(5, 10),        # Ganar siempre debe ser importante
                 "peso_bloquear": random.randint(5, 10),     # Bloquear también es crítico
@@ -56,13 +57,13 @@ class EstrategiaDeJuego:
             for clave_peso in diccionario_pesos:
                 self.diccionario_pesos[clave_peso] = int(diccionario_pesos[clave_peso])
                 
-        self.aptitud_obtenida = 0.0  # Puntuación de fitness (se calcula durante evaluación)
+        self.aptitud_obtenida = 0.0  # Fitness del individuo (se calcula durante evaluación)
 
     def clonar_estrategia(self):
         """
-        Crea una copia exacta de esta estrategia.
+        Crea una copia exacta de este individuo.
         
-        Útil para preservar estrategias exitosas durante la evolución
+        Útil para preservar individuos exitosos durante la evolución
         genética (elitismo) o para crear copias de trabajo.
         
         Returns:
@@ -72,21 +73,21 @@ class EstrategiaDeJuego:
 
     def mutar_estrategia(self, probabilidad_mutacion=0.2, amplitud_cambio=3):
         """
-        Aplica mutación genética a los pesos de la estrategia.
+        Aplica operador de mutación genética a los genes del individuo.
         
-        Cada peso tiene una probabilidad de ser modificado por un valor
+        Cada gen (peso) tiene una probabilidad de ser modificado por un valor
         aleatorio dentro de la amplitud especificada. Las mutaciones
         ayudan a explorar nuevas regiones del espacio de soluciones.
         
         Args:
-            probabilidad_mutacion (float): Probabilidad (0.0-1.0) de que cada peso mute
-            amplitud_cambio (int): Máximo cambio absoluto que puede aplicarse a un peso
+            probabilidad_mutacion (float): Probabilidad (0.0-1.0) de que cada gen mute
+            amplitud_cambio (int): Máximo cambio absoluto que puede aplicarse a un gen
         
         Note:
-            Los pesos se mantienen dentro del rango [0, 10] después de la mutación.
+            Los genes se mantienen dentro del rango [0, 10] después de la mutación.
         """
         for clave_peso in self.diccionario_pesos:
-            # Determinar si este peso específico debe mutar
+            # Determinar si este gen específico debe mutar
             if random.random() < probabilidad_mutacion:
                 # Generar variación aleatoria dentro de la amplitud
                 variacion = random.randint(-amplitud_cambio, amplitud_cambio)
@@ -102,31 +103,31 @@ class EstrategiaDeJuego:
 
     def cruzar_con_estrategia(self, otra_estrategia):
         """
-        Crea una estrategia hija mediante cruzamiento genético con otra estrategia.
+        Crea un individuo hijo mediante operador de cruzamiento genético.
         
-        Utiliza cruzamiento uniforme: para cada peso, elige aleatoriamente
+        Utiliza cruzamiento uniforme: para cada gen, elige aleatoriamente
         si heredarlo de este padre o del otro padre. Esto combina características
-        de ambas estrategias parentales.
+        de ambos individuos parentales.
         
         Args:
-            otra_estrategia (EstrategiaDeJuego): La otra estrategia parental
+            otra_estrategia (EstrategiaDeJuego): El otro individuo parental
             
         Returns:
-            EstrategiaDeJuego: Nueva estrategia que combina pesos de ambos padres
+            EstrategiaDeJuego: Nuevo individuo que combina genes de ambos padres
         
         Note:
             El cruzamiento es simétrico: el orden de los padres no afecta
-            la distribución probabilística de los pesos heredados.
+            la distribución probabilística de los genes heredados.
         """
         pesos_hijo = {}
         
-        # Para cada peso, elegir aleatoriamente de cuál padre heredar
+        # Para cada gen, elegir aleatoriamente de cuál padre heredar
         for clave_peso in self.diccionario_pesos:
             if random.random() < 0.5:
-                # Heredar peso del primer padre (self)
+                # Heredar gen del primer padre (self)
                 pesos_hijo[clave_peso] = self.diccionario_pesos[clave_peso]
             else:
-                # Heredar peso del segundo padre (otra_estrategia)
+                # Heredar gen del segundo padre (otra_estrategia)
                 pesos_hijo[clave_peso] = otra_estrategia.diccionario_pesos[clave_peso]
                 
         return EstrategiaDeJuego(pesos_hijo)
