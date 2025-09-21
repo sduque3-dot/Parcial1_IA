@@ -48,7 +48,7 @@ class VentanaDeJuego(QMainWindow):
         self.setWindowTitle("Triqui con el Algoritmo Genético")
         
         # Agregar icono de la ventana
-        self.setWindowIcon(QIcon("ui/img/UTP.png"))
+        self.setWindowIcon(QIcon("../resources/UTP.png"))
         
         # Color de fondo de toda la ventana
         self.setStyleSheet("background-color: #2d313f;")
