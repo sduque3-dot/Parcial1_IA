@@ -25,7 +25,7 @@ class AlgoritmoGenetico:
     - Reemplazo: Elitismo + Reemplazo generacional
     """
     
-    def __init__(self, tamano_poblacion=20, total_generaciones=40, probabilidad_mutacion=0.2, cantidad_elite=2):
+    def __init__(self, tamano_poblacion=80, total_generaciones=150, probabilidad_mutacion=0.1, cantidad_elite=12):
         """
         Inicializa el motor del algoritmo genético con los parámetros especificados.
         
