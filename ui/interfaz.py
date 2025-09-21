@@ -187,13 +187,13 @@ class VentanaDeJuego(QMainWindow):
         fila_1.addWidget(QLabel("Tamaño de población:"))
         self.campo_poblacion = QSpinBox()
         self.campo_poblacion.setRange(4, 200)
-        self.campo_poblacion.setValue(80)  # Cambiado de 24 a 80
+        self.campo_poblacion.setValue(80)  
         fila_1.addWidget(self.campo_poblacion)
 
         fila_1.addWidget(QLabel("Número de generaciones:"))
         self.campo_generaciones = QSpinBox()
         self.campo_generaciones.setRange(1, 200)
-        self.campo_generaciones.setValue(150)  # Cambiado de 20 a 150
+        self.campo_generaciones.setValue(150)  
         fila_1.addWidget(self.campo_generaciones)
         layout_entrenamiento.addLayout(fila_1)
 
@@ -201,13 +201,13 @@ class VentanaDeJuego(QMainWindow):
         fila_2.addWidget(QLabel("Mutación (%):"))
         self.campo_mutacion = QSpinBox()
         self.campo_mutacion.setRange(0, 100)
-        self.campo_mutacion.setValue(10)  # Cambiado de 20 a 10 (10%)
+        self.campo_mutacion.setValue(10) 
         fila_2.addWidget(self.campo_mutacion)
 
         fila_2.addWidget(QLabel("Élite:"))
         self.campo_elite = QSpinBox()
         self.campo_elite.setRange(0, 20)
-        self.campo_elite.setValue(12)  # Cambiado de 2 a 12 (15% de 80)
+        self.campo_elite.setValue(12)  
         fila_2.addWidget(self.campo_elite)
         layout_entrenamiento.addLayout(fila_2)
 
